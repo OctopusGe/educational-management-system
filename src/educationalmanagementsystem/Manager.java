@@ -137,7 +137,7 @@ public class Manager {
 				System.out.println("**************查看我的留言板***************");
 				break;
 			case 9:
-				System.out.println("**************删除好友***************");
+				//System.out.println("**************删除好友***************");
 				delFriend(sno);
 				break;
 			case 10:
@@ -180,8 +180,11 @@ public class Manager {
 			}
 		}
 		if(flag == true) {
+			System.out.println("已删除！");
 			friends[k].setNote(null, friends[k].getFriendsSize()-1);
 			friends[k].setFriendsSize(friends[k].getFriendsSize()-1);
+			System.out.println("-------------------删除后的信息如下------------------");
+			showMyFriends(sno);	
 		}else {
 			System.out.println("您输入的QQ号有误！");
 		}
@@ -223,6 +226,7 @@ public class Manager {
 	 * @param sno
 	 */
 	private void addFriend(long sno) {
+		System.out.println("***************未添加的同学列表***************");
 		showSchoolmate(sno,"notFriends");
 		System.out.print("请输入您要添加好友的QQ号：");
 		long friendNO = setNumber();
@@ -243,13 +247,15 @@ public class Manager {
 				System.out.print("好友备注：");
 				friends[i].setNote(input.next(), friends[i].getFriendsSize());
 				friends[i].setFriendsSize(friends[i].getFriendsSize()+1);
+				System.out.println("添加成功！");
+				System.out.println("----------------添加后的好友关系如下--------------");
+				showSchoolmate(sno,"all");
 			}else {
 				System.out.println("该QQ号已是您的好友！");
 			}
 		}else {
 			System.out.println("您输入的QQ号有误！");
 		}
-		showSchoolmate(sno,"all");
 	}
 	/**
 	 * 学生端查询学生信息

@@ -7,7 +7,7 @@ package educationalmanagementsystem;
  */
 public class Friend {
 	private long myNO;							//自己的编号
-	private long[] friendNO = new long[10];	//好友的编号
+	private long[] friendNO = new long[10];		//好友的编号
 	private String[] note = new String[10];		//好友的备注
 	private int friendsSize;					//好友数量
 	//构造函数
