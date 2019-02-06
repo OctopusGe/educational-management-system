@@ -58,11 +58,14 @@ public class Manager {
 			long sno = input.nextLong();
 			System.out.print("请输入密码：");
 			String password = input.next();
+			//验证学生账号
 			if(stuConfirm(sno,password) != -1) {
 				System.out.println("学生登录成功！");
 				System.out.println(students[stuConfirm(sno,password)].getName()+"，欢迎你！");
+				//验证成功，加载学生菜单
 				studentMenu(sno);
 			}else {
+				//验证不通过，打印提示信息
 				System.out.println("账号或者密码错误！");
 			}
 			break;
@@ -72,11 +75,14 @@ public class Manager {
 			String userName = input.next();
 			System.out.print("请输入密码：");
 			String teaPassword = input.next();
+			//验证教师账号
 			if(teacher.getUserName().equals(userName) && teacher.getPassword().equals(teaPassword)) {
 				System.out.println("老师登录成功!");
 				System.out.println(teacher.getName()+"，欢迎你！");
+				//验证成功，加载教师菜单
 				teacherMenu();
 			}else {
+				//验证不通过，打印提示信息
 				System.out.println("账号或者密码错误！");
 			}
 			break;
@@ -169,11 +175,14 @@ public class Manager {
 		System.out.print("请输入您要删除的好友QQ号：");
 		long delFriendQQ = setNumber();
 		int k = searchStu(sno);
+		//定义是否找到好友QQ号的布尔值，初始值为false
 		boolean flag = false;
 		for(int i = 0; i < friends[k].getFriendsSize(); i++) {
 			if(friends[k].getFriendsNO(i) == delFriendQQ) {
+				//找到好友QQ号，改初始值为true
 				flag = true;
 			}
+			//布尔值改变后，将后面的好友信息往前移一位
 			if(flag == true && i < friends[k].getFriendsSize()-1) {
 				friends[k].setFriendsNO(friends[k].getFriendsNO(i+1), i);
 				friends[k].setNote(friends[k].getNote(i+1), i);
@@ -181,6 +190,7 @@ public class Manager {
 		}
 		if(flag == true) {
 			System.out.println("已删除！");
+			//将原先位置最后一位好友信息置为空
 			friends[k].setNote(null, friends[k].getFriendsSize()-1);
 			friends[k].setFriendsSize(friends[k].getFriendsSize()-1);
 			System.out.println("-------------------删除后的信息如下------------------");
@@ -195,15 +205,21 @@ public class Manager {
 	 */
 	private void showMyFriends(long sno) {
 		int k = searchStu(sno);
+		//定义该同学是否有好友的布尔值，初始值为false
 		boolean flag = false;
 		for(int i = 0; i < friends[k].getFriendsSize(); i++) {
+			//进入for循环说明已经添加有好友，打印好友信息栏，并将布尔值改为true
 			if(i == 0) {
 				System.out.println("好友QQ号\t好友备注\t姓名\t性别\t年龄\t电话\t住址");
 				flag = true;
 			}
+			//好友QQ号
 			long friendQQ = friends[k].getFriendsNO(i);
+			//好友备注
 			String note = friends[k].getNote(i);
+			//姓名
 			String name = students[searchStu(friendQQ)].getName();
+			//性别
 			int friendSex = students[searchStu(friendQQ)].getSex();
 			String sex;
 			if(friendSex == 0) {
@@ -211,12 +227,16 @@ public class Manager {
 			}else {
 				sex = "男";
 			}
+			//年龄
 			int age = students[searchStu(friendQQ)].getAge();
+			//电话
 			String tel = students[searchStu(friendQQ)].getTel();
+			//住址
 			String address = students[searchStu(friendQQ)].getAddress();
-			
+			//打印好友信息
 			System.out.println(friendQQ+"\t"+note+"\t"+name+"\t"+sex+"\t"+age+"\t"+tel+"\t"+address);
 		}
+		//没有好友，打印提示信息
 		if(flag == false) {
 			System.out.println("您还没有添加好友！");
 		}
@@ -235,14 +255,18 @@ public class Manager {
 		if(k == i) {
 			System.out.println("不能添加自己！");
 		}else if(k != -1) {
-			boolean flag = true;
+			//定义一个是否已经添加该好友的布尔值，初始值为false
+			boolean flag = false;
+			//遍历好友列表
 			for(int j = 0; j < friends[i].getFriendsSize(); j++) {
 				if(friendNO == friends[i].getFriendsNO(j)) {
-					flag = false;
+					//已存在该好友，改变布尔值为true
+					flag = true;
 					break;
 				}
 			}
-			if(flag == true) {
+			//为存在该好友则添加
+			if(flag == false) {
 				friends[i].setFriendsNO(friendNO, friends[i].getFriendsSize());
 				System.out.print("好友备注：");
 				friends[i].setNote(input.next(), friends[i].getFriendsSize());
@@ -250,7 +274,7 @@ public class Manager {
 				System.out.println("添加成功！");
 				System.out.println("----------------添加后的好友关系如下--------------");
 				showSchoolmate(sno,"all");
-			}else {
+			}else {			//已存在该好友，则打印提示信息
 				System.out.println("该QQ号已是您的好友！");
 			}
 		}else {
@@ -312,11 +336,13 @@ public class Manager {
 				sex = "男";
 			}
 			String isFriend = "×";
+			//查询QQ号是否在好友列表里
 			for(int j = 0; j < friends[k].getFriendsSize();j++) {
 				if(friends[k].getFriendsNO(j) == students[i].getSno()) {
 					isFriend = "️√";
 				}
 			}
+			//跳过选择加载类型为未添加且已经是好友，和自己的信息
 			if((type.equals("notFriends") && isFriend.equals("️√")) || i==k) {
 				continue;
 			}
@@ -412,6 +438,7 @@ public class Manager {
 		showAll("teacher");
 		System.out.print("请输入您要删除的QQ号：");
 		long sno = setNumber();
+		//找出要删除的QQ号的位置，其后面的学生信息往前移一位
 		for(int i = searchStu(sno); i < stuSize-1; i++) {
 			students[i] = students[i+1];
 		}
@@ -458,17 +485,17 @@ public class Manager {
 		int age;
 		while(true) {								//死循环
 			try {
-				age = input.nextInt();
+				age = input.nextInt();				
 				if(age > 100 || age < 0)	
 					throw new MyInputMismatchException("输入有误！");		
-				break;								//输入范围在0到100就结束死循环
+				break;								//输入的值范围在0到100就结束死循环
 			} catch (InputMismatchException e) {
 				System.out.print("请输入一个数字：");
-				input = new Scanner(System.in);		
+				input = new Scanner(System.in);		//输入不是数字的值，就重新输入
 			} catch (MyInputMismatchException e) {
 				System.out.println(e.getMessage());
 				System.out.print("请输入0到100的数字：");
-				input = new Scanner(System.in);
+				input = new Scanner(System.in);		//输入数字的值不在1到100范围内，就重新输入
 			}
 		}
 		return age;
@@ -519,6 +546,7 @@ public class Manager {
 		int startAge = (int)setNumber();
 		System.out.print("请输入终止年龄：");
 		int endAge = (int)setNumber();
+		//定义是否有学生的年龄在该年龄段的布尔值变量，初始值为false
 		boolean flag = false;
 		for (int i = 0; i < stuSize; i++) {
 			if(students[i].getAge() >= startAge && students[i].getAge() <= endAge) {
@@ -528,6 +556,7 @@ public class Manager {
 					}else {
 						System.out.println("QQ\t姓名\t性别\t年龄\t电话\t住址");
 					}
+					//第一次找到在该年龄段的学生，改变布尔值为true
 					flag = true;
 				}
 				showMessage(i,role);
@@ -544,6 +573,7 @@ public class Manager {
 	private void relyAddress(String role) {
 		System.out.print("请输入地址：");
 		String address = input.next();
+		//定义是否有学生的地址属于该地址的布尔值变量，初始值为false
 		boolean flag = false;
 		for (int i = 0; i < stuSize; i++) {
 			if(students[i].getAddress().equals(address)) {
@@ -553,6 +583,7 @@ public class Manager {
 					}else {
 						System.out.println("QQ\t姓名\t性别\t年龄\t电话\t住址");
 					}
+					//第一次找到在该地址的学生，改变布尔值为true
 					flag = true;
 				}
 				showMessage(i,role);
@@ -568,6 +599,7 @@ public class Manager {
 	 */
 	private void relyName(String role) {
 		System.out.print("请输入学生姓名：");
+		//定义是否有学生的姓名是该姓名的布尔值变量，初始值为false
 		boolean flag = false;
 		String name = input.next();
 		for (int i = 0; i < stuSize; i++) {
@@ -578,6 +610,7 @@ public class Manager {
 					}else {
 						System.out.println("QQ\t姓名\t性别\t年龄\t电话\t住址");
 					}
+					//第一次找到在该姓名的学生，改变布尔值为true
 					flag = true;
 				}
 				showMessage(i,role);				
@@ -626,7 +659,7 @@ public class Manager {
 	/**
 	 * 根据传入的下标值，查找学生信息
 	 * @param no
-	 * @param role	不同的身份，查询的信息不一样
+	 * @param role	不同的身份，查询到的信息不一样
 	 */
 	private void showMessage(int no, String role) {
 		String message = null;
@@ -659,6 +692,10 @@ public class Manager {
 		}
 		return -1;
 	}
+	/**
+	 * 展示全部学生信息
+	 * @param role	不同的身份，展示的信息不一样
+	 */
 	private void showAll(String role) {
 		System.out.println("****************查询所有学生信息****************");
 		if(role.equals("teacher")) {
