@@ -716,21 +716,25 @@ public class Manager {
 		System.out.println("**************添加学生信息***************");
 		System.out.print("请输入QQ号：");
 		long sno = input.nextLong();
-		System.out.print("请输入密码：");
-		String password = input.next();
-		System.out.print("请输入姓名：");
-		String name = input.next();
-		System.out.print("请输入性别（0代表女，1代表男）：");
-		int sex = setSexNumber();
-		System.out.print("请输入年龄：");
-		int age = input.nextInt();
-		System.out.print("请输入电话号码：");
-		String tel = input.next();
-		System.out.print("请输入地址：");
-		String address = input.next();
-		students[stuSize] = new Student(sno, password, name, sex, age, tel, address);
-		stuSize++;
-		System.out.println("添加成功！");
+		if(searchStu(sno) != -1) {
+			System.out.print("请输入密码：");
+			String password = input.next();
+			System.out.print("请输入姓名：");
+			String name = input.next();
+			System.out.print("请输入性别（0代表女，1代表男）：");
+			int sex = setSexNumber();
+			System.out.print("请输入年龄：");
+			int age = input.nextInt();
+			System.out.print("请输入电话号码：");
+			String tel = input.next();
+			System.out.print("请输入地址：");
+			String address = input.next();
+			students[stuSize] = new Student(sno, password, name, sex, age, tel, address);
+			stuSize++;
+			System.out.println("添加成功！");
+		}else {
+			System.out.println("该QQ号已存在！");
+		}
 	}
 	/**
 	 * 设置正确的性别编号
