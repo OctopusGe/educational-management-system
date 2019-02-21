@@ -1,14 +1,14 @@
 package educationalmanagementsystem;
 
 /**
- * 好友类
+ * 好友类（一个好友类表示一个同学所有的好友信息）
  * @author stone
  *
  */
 public class Friend {
 	private long myNO;							//自己的编号
-	private long[] friendNO = new long[10];		//好友的编号
-	private String[] note = new String[10];		//好友的备注
+	private long[] friendNO = new long[14];		//好友的编号
+	private String[] note = new String[14];		//好友的备注
 	private int friendsSize;					//好友数量
 	//构造函数
 	public Friend() {}

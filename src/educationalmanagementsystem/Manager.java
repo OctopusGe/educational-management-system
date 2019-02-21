@@ -13,7 +13,7 @@ public class Manager {
 	Scanner input = new Scanner(System.in);
 	Teacher teacher = new Teacher("王校长","admin", "123456", 0, 30, "0810245", "北京");
 	Student[] students = new Student[15];
-	Friend[] friends = new Friend[14];
+	Friend[] friends = new Friend[15];
 	private int stuSize;					//记录现有学生数量
 	/**
 	 * 初始化学生信息
@@ -55,7 +55,7 @@ public class Manager {
 		switch (no) {
 		case 1:
 			System.out.print("请输入账号：");
-			long sno = input.nextLong();
+			long sno = setNumber();
 			System.out.print("请输入密码：");
 			String password = input.next();
 			//验证学生账号
@@ -147,7 +147,7 @@ public class Manager {
 				delFriend(sno);
 				break;
 			case 10:
-				System.out.println("**************修改好友备注***************");
+				alterNote(sno);
 				break;
 			case 0:
 				input.next();
@@ -166,37 +166,85 @@ public class Manager {
 		}while(flag != 0);
 	}
 	/**
+	 * 修改好友备注
+	 * @param sno
+	 */
+	private void alterNote(long sno) {
+		System.out.println("**************修改好友备注***************");
+		int k = searchStu(sno);
+		//查询该QQ号的好友数量
+		if(friends[k].getFriendsSize() != 0) {
+			System.out.println("****************好友列表****************");
+			showMyFriends(sno);
+			System.out.print("请输入您要修改备注的好友QQ号：");
+			long friendQQ = setNumber();
+			int i = searcherFriend(sno,friendQQ);
+			if(i != -1) {
+				System.out.print("请输入好友备注：");
+				friends[k].setNote(input.next(), i);
+				System.out.println("修改成功！");
+				System.out.println("----------------修改后好友信息如下-------------");
+				showMyFriends(sno);
+			}else {
+				System.out.println("您的输入有误！");
+			}
+		}else {
+			System.out.println("您还没有添加好友！");
+		}
+	}
+	/**
+	 * 查询好友QQ号在好友列表中的下标值
+	 * @param myQQ（自己的QQ号）
+	 * @param friendQQ（要查询的好友QQ号）
+	 * @return	好友QQ号在好友列表中的下标值，找不到返回-1
+	 */
+	private int searcherFriend(long myQQ,long friendQQ) {
+		int k = searchStu(myQQ);
+		for(int i = 0; i < friends[k].getFriendsSize(); i++) {
+			if(friends[k].getFriendsNO(i) == friendQQ) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	/**
 	 * 删除好友
 	 * @param sno
 	 */
 	private void delFriend(long sno) {
 		System.out.println("****************好友列表****************");
-		showMyFriends(sno);	
-		System.out.print("请输入您要删除的好友QQ号：");
-		long delFriendQQ = setNumber();
 		int k = searchStu(sno);
-		//定义是否找到好友QQ号的布尔值，初始值为false
-		boolean flag = false;
-		for(int i = 0; i < friends[k].getFriendsSize(); i++) {
-			if(friends[k].getFriendsNO(i) == delFriendQQ) {
-				//找到好友QQ号，改初始值为true
-				flag = true;
-			}
-			//布尔值改变后，将后面的好友信息往前移一位
-			if(flag == true && i < friends[k].getFriendsSize()-1) {
-				friends[k].setFriendsNO(friends[k].getFriendsNO(i+1), i);
-				friends[k].setNote(friends[k].getNote(i+1), i);
-			}
-		}
-		if(flag == true) {
-			System.out.println("已删除！");
-			//将原先位置最后一位好友信息置为空
-			friends[k].setNote(null, friends[k].getFriendsSize()-1);
-			friends[k].setFriendsSize(friends[k].getFriendsSize()-1);
-			System.out.println("-------------------删除后的信息如下------------------");
+		//查询好友数量
+		if(friends[k].getFriendsSize() != 0) {
 			showMyFriends(sno);	
+			System.out.print("请输入您要删除的好友QQ号：");
+			long delFriendQQ = setNumber();
+			//定义是否找到好友QQ号的布尔值，初始值为false
+			boolean flag = false;
+			for(int i = 0; i < friends[k].getFriendsSize(); i++) {
+				if(friends[k].getFriendsNO(i) == delFriendQQ) {
+					//找到好友QQ号，改初始值为true
+					flag = true;
+				}
+				//布尔值改变后，将后面的好友信息往前移一位
+				if(flag == true && i < friends[k].getFriendsSize()-1) {
+					friends[k].setFriendsNO(friends[k].getFriendsNO(i+1), i);
+					friends[k].setNote(friends[k].getNote(i+1), i);
+				}
+			}
+			if(flag == true) {
+				System.out.println("已删除！");
+				//将原先位置最后一位好友信息置为空
+				friends[k].setNote(null, friends[k].getFriendsSize()-1);
+				//好友数量减一
+				friends[k].setFriendsSize(friends[k].getFriendsSize()-1);
+				System.out.println("-------------------删除后的信息如下------------------");
+				showMyFriends(sno);	
+			}else {
+				System.out.println("您输入的QQ号有误！");
+			}
 		}else {
-			System.out.println("您输入的QQ号有误！");
+			System.out.println("您还没有添加好友！");
 		}
 	}
 	/**
@@ -265,7 +313,7 @@ public class Manager {
 					break;
 				}
 			}
-			//为存在该好友则添加
+			//未存在该好友则添加
 			if(flag == false) {
 				friends[i].setFriendsNO(friendNO, friends[i].getFriendsSize());
 				System.out.print("好友备注：");
@@ -438,11 +486,13 @@ public class Manager {
 		showAll("teacher");
 		System.out.print("请输入您要删除的QQ号：");
 		long sno = setNumber();
-		//找出要删除的QQ号的位置，其后面的学生信息往前移一位
+		//找出要删除的QQ号的位置，其后面的学生信息和其好友信息往前移一位
 		for(int i = searchStu(sno); i < stuSize-1; i++) {
 			students[i] = students[i+1];
+			friends[i] = friends[i+1];
 		}
-		students[searchStu(sno)] = null;		//最后一个置为空
+		students[stuSize-1] = null;		//最后一个置为空
+		friends[stuSize-1] = null;
 		stuSize--;
 		System.out.println("--------------删除后的信息如下：---------------");
 		showAll("teacher");
@@ -730,6 +780,7 @@ public class Manager {
 			System.out.print("请输入地址：");
 			String address = input.next();
 			students[stuSize] = new Student(sno, password, name, sex, age, tel, address);
+			friends[stuSize] = new Friend(sno);
 			stuSize++;
 			System.out.println("添加成功！");
 		}else {
