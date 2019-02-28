@@ -415,6 +415,7 @@ public class Manager {
 		}else if(!newPassword1.equals(newPassword2)){
 			System.out.println("您输入的两次新密码不一致！");
 		}else {
+			students[i].setPassword(newPassword1);
 			System.out.println("修改成功！");
 		}
 	}
